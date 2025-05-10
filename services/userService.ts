@@ -1,4 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:5158/api';
+
+axios.defaults.timeout = 10000; 
+
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API Error:', error.message);
+    if (error.code === 'ECONNABORTED') {
+      console.error('Timeout error - server took too long to respond');
+    }
+    return Promise.reject(error);
+  }
+);
 
 export interface User {
   name: string;
@@ -6,30 +22,28 @@ export interface User {
   password: string;
 }
 
-const USERS_STORAGE_KEY = '@auth_users';
+
 const CURRENT_USER_KEY = '@auth_current_user';
 
 export const registerUser = async (user: User): Promise<boolean> => {
   try {
-    // Get existing users
-    const existingUsers = await getUsers();
+    console.log('Sending registration request to:', `${API_URL}/Auth/register`);
+    console.log('With data:', { name: user.name, email: user.email });
     
-    // Check if user already exists
-    const userExists = existingUsers.some(
-      (existingUser) => existingUser.email.toLowerCase() === user.email.toLowerCase()
-    );
+    const response = await axios.post(`${API_URL}/Auth/register`, user);
     
-    if (userExists) {
-      return false;
+    if (response.data.success) {
+      await AsyncStorage.setItem('auth_token', response.data.token);
+      
+      await AsyncStorage.setItem(
+        CURRENT_USER_KEY, 
+        JSON.stringify({ name: user.name, email: user.email })
+      );
+      
+      return true;
     }
     
-    // Add new user
-    const newUsers = [...existingUsers, user];
-    
-    // Save users
-    await AsyncStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
-    
-    return true;
+    return false;
   } catch (error) {
     console.error('Error registering user:', error);
     return false;
@@ -38,19 +52,23 @@ export const registerUser = async (user: User): Promise<boolean> => {
 
 export const loginUser = async (email: string, password: string): Promise<User | null> => {
   try {
-    const users = await getUsers();
+    console.log('Sending login request to:', `${API_URL}/Auth/login`);
+    console.log('With email:', email);
     
-    // Find user by email and password
-    const user = users.find(
-      (user) => 
-        user.email.toLowerCase() === email.toLowerCase() && 
-        user.password === password
-    );
+    const response = await axios.post(`${API_URL}/Auth/login`, { email, password });
     
-    if (user) {
-      // Save current logged in user
+    if (response.data.success) {
+      await AsyncStorage.setItem('auth_token', response.data.token);
+      
+      const user = response.data.user;
+      
       await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-      return user;
+      
+      return { 
+        name: user.name, 
+        email: user.email,
+        password: '' 
+      };
     }
     
     return null;
@@ -62,6 +80,7 @@ export const loginUser = async (email: string, password: string): Promise<User |
 
 export const logoutUser = async (): Promise<void> => {
   try {
+    await AsyncStorage.removeItem('auth_token');
     await AsyncStorage.removeItem(CURRENT_USER_KEY);
   } catch (error) {
     console.error('Error logging out:', error);
@@ -71,7 +90,14 @@ export const logoutUser = async (): Promise<void> => {
 export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const userJSON = await AsyncStorage.getItem(CURRENT_USER_KEY);
-    return userJSON ? JSON.parse(userJSON) : null;
+    if (!userJSON) return null;
+    
+    const user = JSON.parse(userJSON);
+    return { 
+      name: user.name, 
+      email: user.email,
+      password: '' 
+    };
   } catch (error) {
     console.error('Error getting current user:', error);
     return null;
@@ -80,18 +106,16 @@ export const getCurrentUser = async (): Promise<User | null> => {
 
 export const getUsers = async (): Promise<User[]> => {
   try {
-    const usersJSON = await AsyncStorage.getItem(USERS_STORAGE_KEY);
-    return usersJSON ? JSON.parse(usersJSON) : [];
+    const currentUser = await getCurrentUser();
+    return currentUser ? [currentUser] : [];
   } catch (error) {
     console.error('Error getting users:', error);
     return [];
   }
 };
 
-// For testing purposes
 export const clearAllUsers = async (): Promise<void> => {
   try {
-    await AsyncStorage.removeItem(USERS_STORAGE_KEY);
     await AsyncStorage.removeItem(CURRENT_USER_KEY);
   } catch (error) {
     console.error('Error clearing users:', error);

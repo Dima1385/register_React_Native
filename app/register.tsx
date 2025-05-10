@@ -47,31 +47,31 @@ export default function RegisterScreen() {
 
     // Validate name
     if (!name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Ім'я обов'язкове";
       isValid = false;
     }
 
     // Validate email
     if (!email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'Email обов\'язковий';
       isValid = false;
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = 'Введіть коректний email';
       isValid = false;
     }
 
     // Validate password
     if (!password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'Пароль обов\'язковий';
       isValid = false;
     } else if (!validatePassword(password)) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = 'Пароль має складатися мінімум з 6 символів';
       isValid = false;
     }
 
     // Validate confirm password
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = 'Паролі не співпадають';
       isValid = false;
     }
 
@@ -95,41 +95,49 @@ export default function RegisterScreen() {
       if (success) {
         // Registration successful
         Alert.alert(
-          'Registration Successful! 🎉',
-          `Congratulations, ${name}! Your account has been created successfully. You can now log in with your email and password.`,
+          'Реєстрація успішна! 🎉',
+          `Вітаємо, ${name}! Ваш обліковий запис успішно створено та дані збережено в базі даних. Тепер ви можете увійти до системи, використовуючи свою електронну пошту та пароль.`,
           [
             { 
-              text: 'Go to Home',
-              onPress: () => router.push('/'),
+              text: 'Увійти зараз',
+              onPress: () => router.push('/login'),
               style: 'default'
             },
+            {
+              text: 'На головну',
+              onPress: () => router.push('/'),
+              style: 'cancel'
+            }
           ],
           { cancelable: false }
         );
       } else {
         // User already exists
         Alert.alert(
-          'Registration Failed',
-          'An account with this email already exists. Please use a different email or try logging in.',
+          'Помилка реєстрації',
+          'Обліковий запис з такою електронною поштою вже існує в базі даних. Будь ласка, використайте іншу електронну пошту або спробуйте увійти з існуючими даними.',
           [
-            { text: 'Try Again' },
             { 
-              text: 'Go to Home', 
-              onPress: () => router.push('/'),
+              text: 'Спробувати з іншою поштою',
+              style: 'cancel'
+            },
+            { 
+              text: 'Увійти', 
+              onPress: () => router.push('/login'),
               style: 'default'
             },
           ]
         );
         setErrors({
           ...newErrors,
-          email: 'An account with this email already exists',
+          email: 'Обліковий запис з такою поштою вже існує',
         });
       }
     } catch (error) {
       setIsLoading(false);
       Alert.alert(
-        'Registration Error',
-        'There was a problem creating your account. Please try again later.',
+        'Помилка реєстрації',
+        'Виникла проблема під час створення вашого облікового запису. Будь ласка, перевірте підключення до інтернету та спробуйте пізніше.',
         [{ text: 'OK' }]
       );
       console.error('Registration error:', error);
@@ -149,10 +157,10 @@ export default function RegisterScreen() {
             style={styles.tab}
             onPress={goBackToHome}
           >
-            <ThemedText style={styles.tabText}>BACK TO HOME</ThemedText>
+            <ThemedText style={styles.tabText}>НАЗАД</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.tab, styles.activeTab]}>
-            <ThemedText style={[styles.tabText, styles.activeTabText]}>SIGN UP</ThemedText>
+            <ThemedText style={[styles.tabText, styles.activeTabText]}>РЕЄСТРАЦІЯ</ThemedText>
             <View style={styles.activeTabIndicator} />
           </TouchableOpacity>
         </View>
@@ -160,7 +168,7 @@ export default function RegisterScreen() {
         {/* Form content */}
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>FULL NAME</ThemedText>
+            <ThemedText style={styles.inputLabel}>ПОВНЕ ІМ'Я</ThemedText>
             <TextInput
               style={styles.input}
               value={name}
@@ -184,7 +192,7 @@ export default function RegisterScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>PASSWORD</ThemedText>
+            <ThemedText style={styles.inputLabel}>ПАРОЛЬ</ThemedText>
             <TextInput
               style={styles.input}
               value={password}
@@ -198,7 +206,7 @@ export default function RegisterScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>CONFIRM PASSWORD</ThemedText>
+            <ThemedText style={styles.inputLabel}>ПІДТВЕРДЖЕННЯ ПАРОЛЯ</ThemedText>
             <TextInput
               style={styles.input}
               value={confirmPassword}
@@ -215,7 +223,7 @@ export default function RegisterScreen() {
             <ActivityIndicator size="large" color="#1a73e8" style={styles.loader} />
           ) : (
             <TouchableOpacity style={styles.signUpButton} onPress={handleRegister}>
-              <ThemedText style={styles.signUpButtonText}>SIGN UP</ThemedText>
+              <ThemedText style={styles.signUpButtonText}>ЗАРЕЄСТРУВАТИСЯ</ThemedText>
             </TouchableOpacity>
           )}
         </View>

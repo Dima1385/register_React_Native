@@ -16,8 +16,8 @@ export default function HomeScreen() {
       
       // Show logout success message
       Alert.alert(
-        'Logged Out Successfully',
-        `You have been logged out from your account. Come back soon, ${userName}!`,
+        'Вихід успішний',
+        `Ви вийшли з облікового запису. До побачення, ${userName}!`,
         [{ text: 'OK' }]
       );
     } catch (error) {
@@ -33,10 +33,14 @@ export default function HomeScreen() {
     router.push('/register');
   };
 
+  const goToProfile = () => {
+    router.push('/profile');
+  };
+
   if (isLoading) {
     return (
       <View style={[styles.container, styles.centered]}>
-        <ThemedText style={styles.loadingText}>Loading...</ThemedText>
+        <ThemedText style={styles.loadingText}>Завантаження...</ThemedText>
       </View>
     );
   }
@@ -46,7 +50,7 @@ export default function HomeScreen() {
       <View style={styles.content}>
         <View style={styles.titleContainer}>
           <ThemedText style={styles.titleText}>
-            {user ? `Welcome, ${user.name}` : 'Welcome'}
+            {user ? `Вітаємо, ${user.name}` : 'Ласкаво просимо'}
           </ThemedText>
           <HelloWave />
         </View>
@@ -54,22 +58,31 @@ export default function HomeScreen() {
         <View style={styles.descriptionContainer}>
           {user ? (
             <ThemedText style={styles.description}>
-              You are logged in as {user.email}. Enjoy using our app!
+              Ви увійшли як {user.email}. Насолоджуйтесь користуванням нашим додатком!
             </ThemedText>
           ) : (
             <ThemedText style={styles.description}>
-              Join our community and experience the best features our app has to offer.
+              Приєднуйтесь до нашої спільноти та відкрийте для себе всі можливості нашого додатку.
             </ThemedText>
           )}
         </View>
         
         {user && (
-          <TouchableOpacity 
-            style={styles.actionButton} 
-            onPress={handleLogout}
-          >
-            <ThemedText style={styles.buttonText}>LOGOUT</ThemedText>
-          </TouchableOpacity>
+          <View style={styles.userButtonsContainer}>
+            <TouchableOpacity 
+              style={styles.profileButton} 
+              onPress={goToProfile}
+            >
+              <ThemedText style={styles.buttonText}>МІЙ ПРОФІЛЬ</ThemedText>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.actionButton} 
+              onPress={handleLogout}
+            >
+              <ThemedText style={styles.buttonText}>ВИЙТИ</ThemedText>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
       
@@ -79,14 +92,14 @@ export default function HomeScreen() {
             style={styles.authButton}
             onPress={goToRegister}
           >
-            <ThemedText style={styles.buttonText}>CREATE ACCOUNT</ThemedText>
+            <ThemedText style={styles.buttonText}>СТВОРИТИ АКАУНТ</ThemedText>
           </TouchableOpacity>
           
           <TouchableOpacity 
             style={[styles.authButton, styles.loginButton]}
             onPress={goToLogin}
           >
-            <ThemedText style={styles.buttonText}>SIGN IN</ThemedText>
+            <ThemedText style={styles.buttonText}>УВІЙТИ</ThemedText>
           </TouchableOpacity>
         </View>
       )}
@@ -132,12 +145,24 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#CCCCCC', // Light gray text for dark background
   },
-  actionButton: {
+  userButtonsContainer: {
     width: '100%',
     maxWidth: 280,
+    gap: 16,
+  },
+  profileButton: {
+    width: '100%',
     height: 52,
     borderRadius: 26,
     backgroundColor: '#1a73e8',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  actionButton: {
+    width: '100%',
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: '#e53935', // Red for logout
     justifyContent: 'center',
     alignItems: 'center',
   },

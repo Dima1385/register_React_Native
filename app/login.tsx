@@ -23,7 +23,7 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
-    // Clear previous errors
+
     setErrors({
       email: '',
       password: '',
@@ -37,22 +37,20 @@ export default function LoginScreen() {
       general: '',
     };
 
-    // Validate email
     if (!email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'Email обов\'язковий';
       isValid = false;
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = 'Введіть коректний email';
       isValid = false;
     }
 
-    // Validate password
+
     if (!password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'Пароль обов\'язковий';
       isValid = false;
     }
 
-    // If there are errors, set them and return
     if (!isValid) {
       setErrors(newErrors);
       return;
@@ -60,41 +58,48 @@ export default function LoginScreen() {
 
     try {
       setIsLoading(true);
-      // Attempt to login user
       const user = await loginUser(email, password);
       setIsLoading(false);
 
       if (user) {
-        // Login successful
         Alert.alert(
-          'Login Successful! 🎉',
-          `Welcome back, ${user.name}! You have successfully logged into your account.`,
+          'Успішний вхід! 🎉',
+          `Вітаємо, ${user.name}! Вхід у систему успішний. Ви можете переглянути свій профіль і користуватися всіма функціями додатку.`,
           [
             { 
-              text: 'Continue',
-              onPress: () => router.push('/'),
+              text: 'Продовжити',
+              onPress: () => router.push('/profile'),
               style: 'default'
             },
           ],
           { cancelable: false }
         );
       } else {
-        // Invalid credentials
         Alert.alert(
-          'Login Failed',
-          'The email or password you entered is incorrect. Please try again.',
-          [{ text: 'OK' }]
+          'Помилка входу',
+          'Невірна електронна пошта або пароль. Перевірте введені дані та спробуйте знову, або створіть новий обліковий запис.',
+          [
+            { 
+              text: 'Спробувати ще раз',
+              style: 'cancel'
+            },
+            {
+              text: 'Зареєструватися',
+              onPress: () => router.push('/register'),
+              style: 'default'
+            }
+          ]
         );
         setErrors({
           ...newErrors,
-          general: 'Invalid email or password',
+          general: 'Невірна електронна пошта або пароль',
         });
       }
     } catch (error) {
       setIsLoading(false);
       Alert.alert(
-        'Login Error',
-        'There was a problem connecting to the service. Please try again later.',
+        'Помилка входу',
+        'Виникла проблема під час з\'єднання з сервером. Будь ласка, перевірте підключення до інтернету та спробуйте пізніше.',
         [{ text: 'OK' }]
       );
       console.error('Login error:', error);
@@ -111,14 +116,14 @@ export default function LoginScreen() {
         {/* Tabs */}
         <View style={styles.tabContainer}>
           <TouchableOpacity style={[styles.tab, styles.activeTab]}>
-            <ThemedText style={[styles.tabText, styles.activeTabText]}>SIGN IN</ThemedText>
+            <ThemedText style={[styles.tabText, styles.activeTabText]}>УВІЙТИ</ThemedText>
             <View style={styles.activeTabIndicator} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.tab}
             onPress={goBackToHome}
           >
-            <ThemedText style={styles.tabText}>BACK TO HOME</ThemedText>
+            <ThemedText style={styles.tabText}>НАЗАД</ThemedText>
           </TouchableOpacity>
         </View>
 
@@ -129,7 +134,7 @@ export default function LoginScreen() {
           ) : null}
 
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>USERNAME</ThemedText>
+            <ThemedText style={styles.inputLabel}>ЕЛЕКТРОННА ПОШТА</ThemedText>
             <TextInput
               style={styles.input}
               value={email}
@@ -142,7 +147,7 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>PASSWORD</ThemedText>
+            <ThemedText style={styles.inputLabel}>ПАРОЛЬ</ThemedText>
             <TextInput
               style={styles.input}
               value={password}
@@ -165,23 +170,23 @@ export default function LoginScreen() {
               style={styles.switch}
             />
             <ThemedText style={styles.switchLabel}>
-              {keepSignedIn ? "YES" : "NO"}
+              {keepSignedIn ? "ТАК" : "НІ"}
             </ThemedText>
-            <ThemedText style={styles.keepSignedInText}>KEEP ME SIGNED IN</ThemedText>
+            <ThemedText style={styles.keepSignedInText}>ЗАПАМ'ЯТАТИ МЕНЕ</ThemedText>
           </View>
 
           {isLoading ? (
             <ActivityIndicator size="large" color="#1a73e8" style={styles.loader} />
           ) : (
             <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
-              <ThemedText style={styles.signInButtonText}>SIGN IN</ThemedText>
+              <ThemedText style={styles.signInButtonText}>УВІЙТИ</ThemedText>
             </TouchableOpacity>
           )}
 
           <View style={styles.separator} />
 
           <TouchableOpacity style={styles.forgotPasswordContainer}>
-            <ThemedText style={styles.forgotPasswordText}>Forgot your password?</ThemedText>
+            <ThemedText style={styles.forgotPasswordText}>Забули пароль?</ThemedText>
           </TouchableOpacity>
         </View>
       </View>
@@ -192,7 +197,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#333333', // Dark gray background
+    backgroundColor: '#333333', 
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
