@@ -44,8 +44,18 @@ export const registerUser = async (user: User): Promise<boolean> => {
     }
     
     return false;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error registering user:', error);
+    
+    // Check if this is a response error due to user already existing
+    if (error.response && error.response.status === 400 && 
+        error.response.data && error.response.data.success === false &&
+        error.response.data.message && 
+        error.response.data.message.includes('вже існує')) {
+      console.log('User already exists error:', error.response.data.message);
+      // This is a user already exists error - we'll handle it in the registration UI
+    }
+    
     return false;
   }
 };

@@ -83,6 +83,39 @@ export default function RegisterScreen() {
 
     try {
       setIsLoading(true);
+      
+      // First, check if user exists by making a GET request
+      try {
+        const response = await fetch(`http://localhost:5158/api/Auth/user/${encodeURIComponent(email)}`);
+        if (response.ok) {
+          // User exists
+          setIsLoading(false);
+          Alert.alert(
+            'Користувач вже існує',
+            'Обліковий запис з такою електронною поштою вже існує в базі даних. Будь ласка, використайте іншу електронну пошту або спробуйте увійти з існуючими даними.',
+            [
+              { 
+                text: 'Спробувати з іншою поштою',
+                style: 'cancel'
+              },
+              { 
+                text: 'Увійти', 
+                onPress: () => router.push('/login'),
+                style: 'default'
+              },
+            ]
+          );
+          setErrors({
+            ...newErrors,
+            email: 'Обліковий запис з такою поштою вже існує',
+          });
+          return;
+        }
+      } catch (error) {
+        // If error checking user, continue with registration
+        console.log('Error checking if user exists:', error);
+      }
+      
       // Register user
       const success = await registerUser({
         name,

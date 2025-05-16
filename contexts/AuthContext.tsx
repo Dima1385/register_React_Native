@@ -63,7 +63,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return success;
     } catch (error) {
       console.error('Registration error:', error);
-      setError('Failed to register');
+      if (typeof error === 'string' && error.includes('вже існує')) {
+        setError('Користувач з такою електронною поштою вже існує');
+      } else {
+        setError('Failed to register');
+      }
       return false;
     } finally {
       setIsLoading(false);
