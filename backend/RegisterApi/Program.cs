@@ -1,4 +1,5 @@
 using System.Text;
+using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -42,10 +43,9 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.SetIsOriginAllowed(_ => true) // Дозволяє всі джерела (для розробки)
+        policy.AllowAnyOrigin()  // Дозволяє всі джерела (для розробки)
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); // Дозволяє передавати креденшіали
+              .AllowAnyMethod();
     });
 });
 
@@ -60,6 +60,19 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
+    
+    // Seed categories if none exist
+    if (!dbContext.Categories.Any())
+    {
+        dbContext.Categories.AddRange(
+            new RegisterApi.Models.Category { Name = "Electronics", ImageUrl = "https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" },
+            new RegisterApi.Models.Category { Name = "Books", ImageUrl = "https://images.unsplash.com/photo-1524578271613-d550eacf6090?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" },
+            new RegisterApi.Models.Category { Name = "Clothing", ImageUrl = "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" },
+            new RegisterApi.Models.Category { Name = "Home", ImageUrl = "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" },
+            new RegisterApi.Models.Category { Name = "Sports", ImageUrl = "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" }
+        );
+        dbContext.SaveChanges();
+    }
 }
 
 // Configure the HTTP request pipeline.
