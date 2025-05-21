@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPI\\RegisterApi.csproj": {}
+    "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPi\\RegisterApi.csproj": {}
   },
   "projects": {
-    "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPI\\RegisterApi.csproj": {
+    "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPi\\RegisterApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPI\\RegisterApi.csproj",
+        "projectUniqueName": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPi\\RegisterApi.csproj",
         "projectName": "RegisterApi",
-        "projectPath": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPI\\RegisterApi.csproj",
+        "projectPath": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPi\\RegisterApi.csproj",
         "packagesPath": "C:\\Users\\Dima\\.nuget\\packages\\",
-        "outputPath": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPI\\obj\\",
+        "outputPath": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Dima\\AppData\\Roaming\\NuGet\\NuGet.Config",

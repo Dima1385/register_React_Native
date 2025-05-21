@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "l4RqkV/5n5M=",
+  "dgSpecHash": "t15phXuBw2g=",
   "success": true,
-  "projectFilePath": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPI\\RegisterApi.csproj",
+  "projectFilePath": "E:\\програмування\\android programGit\\register\\register\\backend\\RegisterAPi\\RegisterApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dima\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Dima\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
